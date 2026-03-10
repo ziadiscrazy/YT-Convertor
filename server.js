@@ -10,6 +10,16 @@ const YT_DLP = process.platform === 'win32'
     ? path.join(__dirname, 'yt-dlp.exe') 
     : path.join(__dirname, 'yt-dlp');
 
+const fs = require('fs');
+
+// Log binary status on startup
+console.log(`Checking yt-dlp at: ${YT_DLP}`);
+if (fs.existsSync(YT_DLP)) {
+    console.log('✅ yt-dlp binary found');
+} else {
+    console.log('❌ yt-dlp binary NOT FOUND - downloading will fail');
+}
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -24,18 +34,24 @@ app.get('/api/info', (req, res) => {
         return res.status(400).json({ error: 'URL is required' });
     }
 
-    // Use yt-dlp to get video info as JSON
+    // Anti-blocking flags
     const args = [
         '--dump-json',
         '--no-warnings',
         '--no-playlist',
+        '--no-check-certificates',
+        '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         url
     ];
 
     execFile(YT_DLP, args, { maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
         if (error) {
-            console.error('yt-dlp info error:', stderr || error.message);
-            return res.status(500).json({ error: 'Could not fetch video info. Please check the URL.' });
+            console.error('yt-dlp info error (stderr):', stderr);
+            console.error('yt-dlp info error (msg):', error.message);
+            return res.status(500).json({ 
+                error: 'Could not fetch video info. YouTube might be blocking the request.',
+                details: stderr || error.message
+            });
         }
 
         try {
@@ -111,6 +127,9 @@ app.get('/api/download', (req, res) => {
                 '-f', 'bestaudio',
                 '--no-warnings',
                 '--no-playlist',
+                '--no-check-certificates',
+                '--force-ipv4',
+                '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 '-o', '-',
                 url
             ]);
@@ -126,7 +145,7 @@ app.get('/api/download', (req, res) => {
             ytdlp.stdout.pipe(ffmpegProc.stdin);
             ffmpegProc.stdout.pipe(res);
 
-            ytdlp.stderr.on('data', (d) => console.log('yt-dlp:', d.toString()));
+            ytdlp.stderr.on('data', (d) => console.log('yt-dlp (mp3):', d.toString()));
             ffmpegProc.stderr.on('data', (d) => { /* ffmpeg progress output, ignore */ });
 
             ytdlp.on('error', (e) => {
@@ -160,6 +179,9 @@ app.get('/api/download', (req, res) => {
                 '--ffmpeg-location', ffmpegPath,
                 '--no-warnings',
                 '--no-playlist',
+                '--no-check-certificates',
+                '--force-ipv4',
+                '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 '-o', '-',
                 url
             ]);
