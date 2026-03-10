@@ -4,7 +4,8 @@
   "description": "YouTube to MP3/MP4 converter",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "node -e \"const { execSync } = require('child_process'); const cmd = process.platform === 'win32' ? 'curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe -o yt-dlp.exe' : 'curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o yt-dlp && chmod +x yt-dlp'; execSync(cmd, { stdio: 'inherit' });\""
   },
   "dependencies": {
     "@distube/ytdl-core": "^4.14.4",

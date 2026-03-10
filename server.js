@@ -5,8 +5,10 @@ const { execFile, spawn } = require('child_process');
 const ffmpegPath = require('ffmpeg-static');
 
 const app = express();
-const PORT = 4000;
-const YT_DLP = path.join(__dirname, 'yt-dlp.exe');
+const PORT = process.env.PORT || 4000;
+const YT_DLP = process.platform === 'win32' 
+    ? path.join(__dirname, 'yt-dlp.exe') 
+    : path.join(__dirname, 'yt-dlp');
 
 app.use(cors());
 app.use(express.json());
