@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConvertTube — YouTube to MP3/MP4 Converter</title>
+    <meta name="description" content="Download YouTube videos as high quality MP3 audio or MP4 video. Free, fast, and no registration required.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Animated Background -->
+    <div class="bg-wrapper">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="icon">🎵</span>
+                <span class="brand">ConvertTube</span>
+            </div>
+            <p>Download YouTube videos as high-quality MP3 or MP4. Paste a link and go.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- URL Input -->
+        <div class="search-box" id="search-box">
+            <div class="input-row">
+                <input type="text" id="url-input" placeholder="Paste YouTube URL here..." autocomplete="off">
+                <button class="btn btn-primary" id="fetch-btn">
+                    <span id="fetch-text">Convert</span>
+                </button>
+            </div>
+            <div class="error-msg" id="error-msg"></div>
+        </div>
+
+        <!-- Video Preview Card -->
+        <div class="video-card" id="video-card">
+            <div class="video-thumb-wrap">
+                <img id="video-thumb" src="" alt="Video thumbnail">
+                <span class="video-duration" id="video-duration"></span>
+            </div>
+            <div class="video-info">
+                <div class="video-title" id="video-title"></div>
+                <div class="video-meta">
+                    <span id="video-author"></span>
+                    <span id="video-views"></span>
+                </div>
+            </div>
+            <div class="options-section">
+                <!-- Format Toggle -->
+                <div class="format-toggle">
+                    <button class="format-btn active" data-format="mp3" id="btn-mp3">🎵 MP3 Audio</button>
+                    <button class="format-btn" data-format="mp4" id="btn-mp4">🎬 MP4 Video</button>
+                </div>
+
+                <!-- Quality Selector -->
+                <div class="quality-row">
+                    <label>Quality:</label>
+                    <select id="quality-select">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Download Button -->
+                <button class="btn btn-download" id="download-btn">
+                    ⬇️ Download MP3
+                </button>
+                <div class="download-status" id="download-status">
+                    <span class="spinner"></span> Preparing your download...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Built with ❤️ — ConvertTube does not store any files on its servers.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
