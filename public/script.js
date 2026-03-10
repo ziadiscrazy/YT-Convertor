@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (data.error) {
-                showError(data.error);
+                showError(data.error, data.details);
                 return;
             }
 
@@ -158,8 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---- Helpers ----
-    function showError(msg) {
-        errorMsg.textContent = msg;
+    function showError(msg, details = '') {
+        errorMsg.innerHTML = `<div>${msg}</div>${details ? `<div style="font-size: 0.8em; margin-top: 5px; opacity: 0.7; color: #ff9999;">${details.substring(0, 150)}${details.length > 150 ? '...' : ''}</div>` : ''}`;
         errorMsg.style.display = 'block';
     }
     function hideError() {

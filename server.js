@@ -8,16 +8,14 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 const YT_DLP = process.platform === 'win32' 
     ? path.join(__dirname, 'yt-dlp.exe') 
-    : path.join(__dirname, 'yt-dlp');
+    : 'yt-dlp'; // On Linux, use the system-installed yt-dlp (from nixpacks)
 
 const fs = require('fs');
 
-// Log binary status on startup
-console.log(`Checking yt-dlp at: ${YT_DLP}`);
-if (fs.existsSync(YT_DLP)) {
-    console.log('✅ yt-dlp binary found');
-} else {
-    console.log('❌ yt-dlp binary NOT FOUND - downloading will fail');
+// Log status on startup
+console.log(`Using yt-dlp: ${YT_DLP}`);
+if (process.platform === 'win32' && !fs.existsSync(YT_DLP)) {
+    console.log('⚠️ Local yt-dlp.exe NOT FOUND. Will try to download in postinstall...');
 }
 
 app.use(cors());
@@ -48,8 +46,17 @@ app.get('/api/info', (req, res) => {
         if (error) {
             console.error('yt-dlp info error (stderr):', stderr);
             console.error('yt-dlp info error (msg):', error.message);
+            
+            // Clean up the error message for the user but keep details for the client
+            let userError = 'Could not fetch video info.';
+            if (stderr.includes('403') || stderr.includes('Sign in')) {
+                userError = 'YouTube is blocking the request. A proxy or cookies might be needed.';
+            } else if (error.message.includes('ENOENT')) {
+                userError = 'The yt-dlp binary was not found on the server.';
+            }
+
             return res.status(500).json({ 
-                error: 'Could not fetch video info. YouTube might be blocking the request.',
+                error: userError,
                 details: stderr || error.message
             });
         }

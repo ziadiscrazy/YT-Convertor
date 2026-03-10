@@ -1,8 +1,5 @@
 [phases.setup]
-nixPkgs = ["...", "ffmpeg", "python3"]
+nixPkgs = ["nodejs", "ffmpeg", "python3", "yt-dlp"]
 
 [phases.build]
-cmds = [
-  "npm install",
-  "node -e \"const { execSync } = require('child_process'); const platform = process.platform; const cmd = platform === 'win32' ? 'curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe -o yt-dlp.exe' : 'curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o yt-dlp && chmod +x yt-dlp'; console.log('Downloading yt-dlp...'); execSync(cmd, { stdio: 'inherit' });\""
-]
+cmds = ["npm install"]
