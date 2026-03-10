@@ -1,6 +1,6 @@
 // ConvertTube — Frontend Logic
 document.addEventListener('DOMContentLoaded', () => {
-    const API = 'http://localhost:4000/api';
+    const API = '/api';
 
     // DOM Elements
     const urlInput = document.getElementById('url-input');
